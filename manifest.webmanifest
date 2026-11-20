@@ -1,0 +1,27 @@
+{
+  "id": "./",
+  "name": "PanelPro Garage",
+  "short_name": "PanelPro",
+  "description": "Panel beating garage manager",
+  "lang": "en-ZM",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f6f5",
+  "theme_color": "#123c35",
+  "icons": [
+    {
+      "src": "./icons/panelpro-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icons/panelpro-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

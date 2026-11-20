@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123c35">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="PanelPro">
+  <title>PanelPro Garage</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/panelpro.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icons/panelpro-180.png">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">P</div>
+      <div>
+        <h1>PanelPro</h1>
+        <p>Panel beating garage manager</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="install-app-button" class="backup-button" type="button" hidden>Install app</button>
+      <button id="export-jobs-button" class="backup-button" type="button">Export backup</button>
+      <button id="import-jobs-button" class="backup-button" type="button">Import backup</button>
+      <input id="import-jobs-file" type="file" accept=".json,application/json" hidden>
+      <button id="new-job-button" class="primary-button" type="button">
+        <span aria-hidden="true">+</span> New job
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="stats" aria-label="Job summary">
+      <article class="stat-card">
+        <div class="stat-icon active-icon" aria-hidden="true">↗</div>
+        <div><span>Active jobs</span><strong id="active-count">0</strong></div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-icon parts-icon" aria-hidden="true">◷</div>
+        <div><span>Awaiting parts</span><strong id="parts-count">0</strong></div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-icon ready-icon" aria-hidden="true">✓</div>
+        <div><span>Ready for collection</span><strong id="ready-count">0</strong></div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-icon balance-icon" aria-hidden="true">K</div>
+        <div><span>Outstanding balance</span><strong id="balance-count">K 0.00</strong></div>
+      </article>
+    </section>
+
+    <section class="jobs-panel" aria-labelledby="jobs-title">
+      <div class="panel-heading">
+        <div>
+          <h2 id="jobs-title">Repair jobs</h2>
+          <p>Track each vehicle from check-in to collection.</p>
+        </div>
+        <label class="search-box">
+          <span class="sr-only">Search jobs, customers or vehicles</span>
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input id="search" type="search" placeholder="Search jobs, customers or vehicles">
+        </label>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Job</th>
+              <th scope="col">Customer</th>
+              <th scope="col">Vehicle</th>
+              <th scope="col">Repair</th>
+              <th scope="col">Due date</th>
+              <th scope="col">Estimate</th>
+              <th scope="col">Paid</th>
+              <th scope="col">Balance</th>
+              <th scope="col">Status</th>
+              <th scope="col">Documents</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="jobs-list"></tbody>
+        </table>
+      </div>
+      <p id="jobs-error" class="form-error" role="alert" hidden></p>
+      <p id="jobs-notice" class="form-success" role="status" hidden></p>
+      <div id="empty-message" class="empty" hidden>
+        <span class="empty-icon" aria-hidden="true">⌕</span>
+        <strong>No jobs found</strong>
+        <p>Try a different search or add your first repair job.</p>
+        <button id="empty-new-job" class="text-button" type="button">+ Add a job</button>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="job-dialog" aria-labelledby="dialog-title">
+    <form id="job-form">
+      <div class="dialog-heading">
+        <div>
+          <h2 id="dialog-title">New repair job</h2>
+          <p id="dialog-description">Enter the customer and vehicle details.</p>
+        </div>
+        <button type="button" class="icon-button" id="close-dialog" aria-label="Close">×</button>
+      </div>
+
+      <label>Customer name
+        <input name="customer" required maxlength="100" placeholder="e.g. Thabo Mokoena">
+      </label>
+      <label>Phone number
+        <input name="phone" type="tel" maxlength="30" placeholder="e.g. 082 123 4567">
+      </label>
+      <div class="form-row">
+        <label>Vehicle
+          <input name="vehicle" required maxlength="100" placeholder="e.g. Toyota Corolla">
+        </label>
+        <label>Registration
+          <input name="registration" maxlength="20" placeholder="e.g. CA 123-456">
+        </label>
+      </div>
+      <label>Repair description
+        <textarea name="repair" required maxlength="500" rows="3" placeholder="Describe the damage or repair needed"></textarea>
+      </label>
+      <div class="form-row">
+        <label>Estimate (K)
+          <input name="estimate" type="number" min="0" step="0.01" value="0" inputmode="decimal">
+        </label>
+        <label>Amount paid (K)
+          <input name="amountPaid" type="number" min="0" step="0.01" value="0" inputmode="decimal">
+        </label>
+      </div>
+      <div class="form-row">
+        <label>Status
+          <select name="status">
+            <option>Vehicle checked in</option>
+            <option>Estimate in progress</option>
+            <option>Awaiting approval</option>
+            <option>Awaiting parts</option>
+            <option>In repair</option>
+            <option>Ready for collection</option>
+            <option>Collected</option>
+          </select>
+        </label>
+        <label>Target completion date (optional)
+          <input name="dueDate" type="date">
+        </label>
+      </div>
+      <p id="form-error" class="form-error" role="alert" hidden></p>
+      <div class="form-actions">
+        <button class="secondary-button" id="cancel-dialog" type="button">Cancel</button>
+        <button class="submit-button" id="save-job-button" type="submit">Save job</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
